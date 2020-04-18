@@ -50,7 +50,7 @@ public class Searcher {
 
             NUM_RESULTS = numResults;
             for (QueryModel element : queries) {
-                String queryString = QueryParser.escape(element.getQuery());
+                String queryString = QueryParser.escape(element.getQuery().trim());
                 Query query = queryParser.parse(queryString);
                 search(indexSearcher, query, writer, Integer.parseInt(element.getQueryid()));
             }
