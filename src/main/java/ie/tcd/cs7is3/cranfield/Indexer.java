@@ -26,15 +26,15 @@ import java.util.Objects;
 public class Indexer {
 
     private static Logger logger = LoggerFactory.getLogger(Indexer.class);
-    private static String indexPath = "Index/";
+    private static String INDEX_PATH = "Index/";
 
-    public static boolean createIndex(String docPath) {
+    public static boolean createIndex(String docPath, Analyzers analyserChoice, Similarities similarityChoice) {
 
-        Analyzer analyzer = getAnalyzer("english");
-        Similarity similarity = getSimilarity("bm25");
+        Analyzer analyzer = getAnalyzer(analyserChoice);
+        Similarity similarity = getSimilarity(similarityChoice);
 
         try{
-            Directory directory = FSDirectory.open(Paths.get(indexPath));
+            Directory directory = FSDirectory.open(Paths.get(INDEX_PATH));
             IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
             iwc.setSimilarity(similarity);
@@ -51,8 +51,8 @@ public class Indexer {
     }
 
 
-    public static Analyzer getAnalyzer(String choice) {
-        switch (Objects.requireNonNull(Analyzers.fromName(choice))) {
+    public static Analyzer getAnalyzer(Analyzers choice) {
+        switch (choice) {
             case SIMPLE: return new SimpleAnalyzer();
             case STANDRD: return new StandardAnalyzer();
             case WHITESPACE: return new WhitespaceAnalyzer();
@@ -62,8 +62,8 @@ public class Indexer {
         return new EnglishAnalyzer();
     }
 
-    public static Similarity getSimilarity(String choice) {
-        switch (Objects.requireNonNull(Similarities.fromName(choice))) {
+    public static Similarity getSimilarity(Similarities choice) {
+        switch (choice) {
             case CLASSIC: new ClassicSimilarity();
             case BOOLEAN: new BooleanSimilarity();
             case BM25: new BM25Similarity();

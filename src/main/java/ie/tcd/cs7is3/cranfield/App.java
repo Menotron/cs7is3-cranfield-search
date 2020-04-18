@@ -47,7 +47,8 @@ public class App {
             logger.error("Exception while parsing arguments...");
             gethelp(options);
         }
-        Indexer.createIndex(docPath);
+        Indexer.createIndex(docPath, Indexer.Analyzers.ENGLISH, Indexer.Similarities.BM25);
+        Searcher.runQueries(queryPath, 1000, Indexer.Analyzers.ENGLISH, Indexer.Similarities.BM25);
     }
 
     /**
