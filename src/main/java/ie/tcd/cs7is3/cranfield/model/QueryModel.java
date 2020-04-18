@@ -9,13 +9,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Query {
+public class QueryModel {
     public String queryid = "";
     public String query = "";
 
-    public Query(){}
+    public QueryModel(){}
 
-    public Query(String queryid, String query) {
+    public QueryModel(String queryid, String query) {
         this.queryid = queryid;
         this.query = query;
     }

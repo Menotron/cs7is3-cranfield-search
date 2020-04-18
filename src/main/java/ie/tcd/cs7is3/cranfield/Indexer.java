@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Indexer {
 
@@ -50,27 +49,6 @@ public class Indexer {
         return true;
     }
 
-
-    public static Analyzer getAnalyzer(Analyzers choice) {
-        switch (choice) {
-            case SIMPLE: return new SimpleAnalyzer();
-            case STANDRD: return new StandardAnalyzer();
-            case WHITESPACE: return new WhitespaceAnalyzer();
-            case ENGLISH: return new EnglishAnalyzer();
-            case CUSTOM: return null;
-        }
-        return new EnglishAnalyzer();
-    }
-
-    public static Similarity getSimilarity(Similarities choice) {
-        switch (choice) {
-            case CLASSIC: new ClassicSimilarity();
-            case BOOLEAN: new BooleanSimilarity();
-            case BM25: new BM25Similarity();
-        }
-        return new BM25Similarity();
-    }
-
     public enum Analyzers {
         WHITESPACE("whitespace"), SIMPLE("simple"),
         STOP("stop"), STANDRD("standard"),
@@ -87,6 +65,17 @@ public class Indexer {
         }
     }
 
+    public static Analyzer getAnalyzer(Analyzers choice) {
+        switch (choice) {
+            case SIMPLE: return new SimpleAnalyzer();
+            case STANDRD: return new StandardAnalyzer();
+            case WHITESPACE: return new WhitespaceAnalyzer();
+            case ENGLISH: return new EnglishAnalyzer();
+            case CUSTOM: return null;
+        }
+        return new EnglishAnalyzer();
+    }
+
     public enum Similarities {
         CLASSIC("classic"), BOOLEAN("boolean"), BM25("bm25");
         public String type;
@@ -99,5 +88,14 @@ public class Indexer {
             }
             return null;
         }
+    }
+
+    public static Similarity getSimilarity(Similarities choice) {
+        switch (choice) {
+            case CLASSIC: new ClassicSimilarity();
+            case BOOLEAN: new BooleanSimilarity();
+            case BM25: new BM25Similarity();
+        }
+        return new BM25Similarity();
     }
 }

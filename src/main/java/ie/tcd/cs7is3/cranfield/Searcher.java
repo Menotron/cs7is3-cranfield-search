@@ -1,11 +1,16 @@
 package ie.tcd.cs7is3.cranfield;
 
-import ie.tcd.cs7is3.cranfield.model.Query;
+import ie.tcd.cs7is3.cranfield.model.QueryModel;
 import ie.tcd.cs7is3.cranfield.parser.Parser;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
-
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger;
@@ -22,9 +27,10 @@ public class Searcher {
     private static Logger logger = LoggerFactory.getLogger(Searcher.class);
     private static String INDEX_PATH = "Index/";
     private static String OUTPUT_FILE = "results.txt";
+    private static int NUM_RESULTS = 1;
 
     public static void runQueries(String queryPath, int numResults, Indexer.Analyzers analyserChoice,
-                                  Indexer.Similarities similarityChoice) throws IOException {
+                                  Indexer.Similarities similarityChoice) {
         try {
             Directory directory = FSDirectory.open(Paths.get(INDEX_PATH));
             DirectoryReader indexReader = DirectoryReader.open(directory);
@@ -35,9 +41,35 @@ public class Searcher {
 
             PrintWriter writer = new PrintWriter(OUTPUT_FILE, StandardCharsets.UTF_8.name());
 
-            ArrayList<Query> queries = Parser.parseQuery(queryPath);
-        }catch (IOException ioe) {
+            ArrayList<QueryModel> queries = Parser.parseQuery(queryPath);
+            MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
+                    new String[]{"title", "author", "biblio", "words"}, analyzer);
+
+            NUM_RESULTS = numResults;
+            for (QueryModel element : queries) {
+                String queryString = QueryParser.escape(element.getQuery());
+                Query query = queryParser.parse(queryString);
+                search(indexSearcher, query, writer, Integer.parseInt(element.getQueryid()));
+            }
+
+            indexReader.close();
+            writer.close();
+            directory.close();
+
+        } catch (IOException ioe) {
             logger.error("Error while running queries", ioe);
+        } catch (ParseException pe) {
+            logger.error("Error while parsing query", pe);
         }
     }
+
+    public static void search(IndexSearcher is, Query query, PrintWriter writer, int queryID) throws IOException{
+        ScoreDoc[] hits = is.search(query, NUM_RESULTS).scoreDocs;
+        for (int i = 0; i < hits.length; i++) {
+            Document hitDocument = is.doc(hits[i].doc);
+            writer.println(queryID + " 0 " + hitDocument.get("docid") + " 0 " + hits[i].score + " STANDARD");
+        }
+    }
+
+
 }
