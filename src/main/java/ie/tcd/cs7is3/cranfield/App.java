@@ -53,7 +53,6 @@ public class App {
 
     /**
      * get the command line args parser
-     *
      * @return Options
      */
     private static Options getOption() {
