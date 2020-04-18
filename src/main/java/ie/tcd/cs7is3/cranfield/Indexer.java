@@ -109,7 +109,6 @@ public class Indexer {
         try {
             byte[] encoded = Files.readAllBytes(Paths.get("data/stopwords.txt"));
             String[] words = new String(encoded, StandardCharsets.UTF_8).split("\n");
-            Arrays.stream(words).forEach(System.out::println);
             stopwords =  new CharArraySet(Arrays.asList(words), true);
         } catch (IOException ioe) {
             logger.error("Error Reading stopwords file", ioe);
