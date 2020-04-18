@@ -2,6 +2,7 @@ package ie.tcd.cs7is3.cranfield.parser;
 
 import ie.tcd.cs7is3.cranfield.model.CranDocument;
 import ie.tcd.cs7is3.cranfield.model.CranField;
+import ie.tcd.cs7is3.cranfield.model.Query;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -22,8 +23,16 @@ public class Parser {
     private static Logger logger = LoggerFactory.getLogger(Parser.class);
 
     private static ArrayList<Document> cranDocuments = new ArrayList<Document>();
+    private static ArrayList<Query> queries = new ArrayList<Query>();
     private static final char DOT = '.';
     private static final char SPACE = ' ';
+
+    public static void main(String[] args) throws IOException{
+        parse("data/cran.all.1400");
+        parseQuery("data/cran.qry");
+        System.out.println(cranDocuments.size());
+        System.out.println(queries.size());
+    }
 
     public static ArrayList<Document> parse(String docPath) throws IOException {
         try {
@@ -65,9 +74,49 @@ public class Parser {
                 cranDocuments.add(createLuceneDocument(cranDocument));
             }
         } catch (IOException ioe) {
-            logger.error("Error while parsing", ioe);
+            logger.error("Error while parsing document", ioe);
         }
         return cranDocuments;
+    }
+
+
+    public static ArrayList<Query> parseQuery(String queryPath) throws IOException {
+        try {
+            List<String> fileData = Files.readAllLines(Paths.get(queryPath), StandardCharsets.UTF_8);
+
+            String text = "";
+            Query query = null;
+            CranField fieldToAdd = null;
+
+            for (String line : fileData) {
+                if (line.trim().length() > 0 && line.charAt(0) == DOT) {
+                    if (fieldToAdd != null) {
+                        query.setQuery(text);
+                    }
+                    text = "";
+                    CranField field = Objects.requireNonNull(CranField.fromName(line.substring(0, 2)));
+                    switch (field) {
+                        case I:
+                            if (query != null)
+                                queries.add(query);
+                            query = new Query();
+                            query.setQueryid(line.substring(3));
+                            break;
+                        case W:
+                            fieldToAdd = field; break;
+                        default: break;
+                    }
+                } else
+                    text += line + SPACE;
+            }
+            if (query != null) {
+                query.setQuery(text);
+                queries.add(query);
+            }
+        } catch (IOException ioe) {
+            logger.error("Error while parsing query", ioe);
+        }
+        return queries;
     }
 
     private static Document createLuceneDocument(CranDocument doc) {
