@@ -52,7 +52,7 @@ public class Searcher {
             for (QueryModel element : queries) {
                 String queryString = QueryParser.escape(element.getQuery().trim());
                 Query query = queryParser.parse(queryString);
-                search(indexSearcher, query, writer, Integer.parseInt(element.getQueryid()));
+                search(indexSearcher, query, writer, queries.indexOf(element) + 1);
             }
 
             indexReader.close();

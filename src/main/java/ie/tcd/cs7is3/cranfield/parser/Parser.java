@@ -28,13 +28,6 @@ public class Parser {
     public static final char SPACE = ' ';
     public static final char NEWLINE = '\n';
 
-    public static void main(String[] args) throws IOException{
-        parse("data/cran.all.1400");
-        parseQuery("data/cran.qry");
-        System.out.println(cranDocuments.size());
-        System.out.println(queries.size());
-    }
-
     public static ArrayList<Document> parse(String docPath) throws IOException {
         try {
             List<String> fileData = Files.readAllLines(Paths.get(docPath), StandardCharsets.UTF_8);
