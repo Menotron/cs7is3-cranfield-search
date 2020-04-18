@@ -49,6 +49,7 @@ public class App {
         }
         Indexer.createIndex(docPath, Indexer.Analyzers.ENGLISH, Indexer.Similarities.BM25);
         Searcher.runQueries(queryPath, 1000, Indexer.Analyzers.ENGLISH, Indexer.Similarities.BM25);
+        logger.info("Done...");
     }
 
     /**
