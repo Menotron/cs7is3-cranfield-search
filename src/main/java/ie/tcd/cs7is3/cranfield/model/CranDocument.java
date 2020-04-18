@@ -10,7 +10,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class CranDocument {
-
     public String docid = "";
     public String title = "";
     public String author = "";

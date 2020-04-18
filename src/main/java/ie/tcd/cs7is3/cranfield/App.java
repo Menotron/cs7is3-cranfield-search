@@ -47,6 +47,7 @@ public class App {
             logger.error("Exception while parsing arguments...");
             gethelp(options);
         }
+        Indexer.createIndex(docPath);
     }
 
     /**

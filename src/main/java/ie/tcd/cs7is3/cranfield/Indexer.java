@@ -1,10 +1,14 @@
 package ie.tcd.cs7is3.cranfield;
 
+import ie.tcd.cs7is3.cranfield.parser.Parser;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.BooleanSimilarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
@@ -16,26 +20,38 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Indexer {
 
     private static Logger logger = LoggerFactory.getLogger(Indexer.class);
     private static String indexPath = "Index/";
-    Analyzer analyzer;
-    Similarity similarity;
 
-    public boolean createIndex(String douPath) {
+    public static boolean createIndex(String docPath) {
+
+        Analyzer analyzer = getAnalyzer("english");
+        Similarity similarity = getSimilarity("bm25");
+
         try{
             Directory directory = FSDirectory.open(Paths.get(indexPath));
+            IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+            iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+            iwc.setSimilarity(similarity);
+            IndexWriter indexWriter = new IndexWriter(directory, iwc);
+
+            ArrayList<Document> documents = Parser.parse(docPath);
+            indexWriter.addDocuments(documents);
+            indexWriter.close();
 
         }catch (IOException ioe){
             logger.error("Error while indexing", ioe);
         }
+        return true;
     }
 
 
-    public Analyzer getAnalyzer(String choice) {
+    public static Analyzer getAnalyzer(String choice) {
         switch (Objects.requireNonNull(Analyzers.fromName(choice))) {
             case SIMPLE: return new SimpleAnalyzer();
             case STANDRD: return new StandardAnalyzer();
@@ -46,7 +62,7 @@ public class Indexer {
         return new EnglishAnalyzer();
     }
 
-    public Similarity getSimilarity(String choice) {
+    public static Similarity getSimilarity(String choice) {
         switch (Objects.requireNonNull(Similarities.fromName(choice))) {
             case CLASSIC: new ClassicSimilarity();
             case BOOLEAN: new BooleanSimilarity();
