@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class Indexer {
 
     private static Logger logger = LoggerFactory.getLogger(Indexer.class);
-    private static String INDEX_PATH = "Index/";
+    private static String INDEX_PATH = "index/";
 
     public static boolean createIndex(String docPath, Analyzers analyserChoice, Similarities similarityChoice) {
 
