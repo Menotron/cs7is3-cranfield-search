@@ -2,6 +2,7 @@ package ie.tcd.cs7is3.cranfield;
 
 import ie.tcd.cs7is3.cranfield.parser.Parser;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
@@ -19,13 +20,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Indexer {
 
     private static Logger logger = LoggerFactory.getLogger(Indexer.class);
     private static String INDEX_PATH = "index/";
+
 
     public static boolean createIndex(String docPath, Analyzers analyserChoice, Similarities similarityChoice) {
 
@@ -70,7 +75,7 @@ public class Indexer {
             case SIMPLE: return new SimpleAnalyzer();
             case STANDRD: return new StandardAnalyzer();
             case WHITESPACE: return new WhitespaceAnalyzer();
-            case ENGLISH: return new EnglishAnalyzer();
+            case ENGLISH: return new EnglishAnalyzer(getStopWprds());
             case CUSTOM: return null;
         }
         return new EnglishAnalyzer();
@@ -97,5 +102,18 @@ public class Indexer {
             case BM25: new BM25Similarity();
         }
         return new BM25Similarity();
+    }
+
+    public static CharArraySet getStopWprds(){
+        CharArraySet stopwords = null;
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get("data/stopwords.txt"));
+            String[] words = new String(encoded, StandardCharsets.UTF_8).split("\n");
+            Arrays.stream(words).forEach(System.out::println);
+            stopwords =  new CharArraySet(Arrays.asList(words), true);
+        } catch (IOException ioe) {
+            logger.error("Error Reading stopwords file", ioe);
+        }
+        return stopwords;
     }
 }

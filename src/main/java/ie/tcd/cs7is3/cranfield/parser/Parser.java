@@ -24,8 +24,9 @@ public class Parser {
 
     private static ArrayList<Document> cranDocuments = new ArrayList<Document>();
     private static ArrayList<QueryModel> queries = new ArrayList<QueryModel>();
-    private static final char DOT = '.';
-    private static final char SPACE = ' ';
+    public static final char DOT = '.';
+    public static final char SPACE = ' ';
+    public static final char NEWLINE = '\n';
 
     public static void main(String[] args) throws IOException{
         parse("data/cran.all.1400");
