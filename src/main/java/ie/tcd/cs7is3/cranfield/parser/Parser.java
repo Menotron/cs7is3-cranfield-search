@@ -74,7 +74,7 @@ public class Parser {
         Document document = new Document();
         document.add(new StringField("docid", doc.getDocid(), Field.Store.YES));
         document.add(new TextField("title", doc.getTitle(), Field.Store.YES));
-        document.add(new TextField("bibliography", doc.getBiblio(), Field.Store.YES));
+        document.add(new TextField("biblio", doc.getBiblio(), Field.Store.YES));
         document.add(new TextField("author", doc.getAuthor(), Field.Store.YES));
         document.add(new TextField("words", doc.getWords(), Field.Store.YES));
         return document;

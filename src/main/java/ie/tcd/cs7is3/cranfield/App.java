@@ -19,7 +19,6 @@ public class App {
 
     private static String docPath = "data/cran.all.1400";
     private static String queryPath = "data/cran.qry";
-    private static String indexPath = "Index/";
 
     public static void main(String[] args) throws Exception {
         // parse the args
