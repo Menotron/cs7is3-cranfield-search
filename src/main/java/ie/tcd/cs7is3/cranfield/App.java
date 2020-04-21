@@ -21,14 +21,14 @@ public class App {
     private static String QUERY_OPTION = "q";
     private static String QUERY_OPTION_LONG = "query";
 
-    private static String docPath = "data/cran.all.1400";
-    private static String queryPath = "data/cran.qry";
-
     private static String ANALYZER_OPTION = "a";
     private static String ANALYZER_OPTION_LONG = "analyzer";
 
     private static String SIMILARITY_OPTION = "s";
     private static String SIMILARITY_OPTION_LONG = "similarity";
+
+    private static String docPath = "data/cran.all.1400";
+    private static String queryPath = "data/cran.qry";
 
     public static void main(String[] args) throws Exception {
         // parse the args
@@ -79,11 +79,11 @@ public class App {
     private static Options getOption() {
         final Options options = new Options();
         options.addOption(HELP_OPTION, HELP_OPTION_LONG, false, "Help");
-        options.addOption(DOC_OPTION, DOC_OPTION_LONG, false, "Document path");
-        options.addOption(QUERY_OPTION, QUERY_OPTION_LONG, false, "Query File path");
-        options.addOption(ANALYZER_OPTION, ANALYZER_OPTION_LONG, false, "Analyzer to use, choose from " +
+        options.addOption(DOC_OPTION, DOC_OPTION_LONG, true, "Document path");
+        options.addOption(QUERY_OPTION, QUERY_OPTION_LONG, true, "Query File path");
+        options.addOption(ANALYZER_OPTION, ANALYZER_OPTION_LONG, true, "Analyzer to use, choose from " +
                 "(whitespace | simple | stop | standard | english | custom)");
-        options.addOption(SIMILARITY_OPTION, SIMILARITY_OPTION_LONG, false, "Similarity to use, choose from" +
+        options.addOption(SIMILARITY_OPTION, SIMILARITY_OPTION_LONG, true, "Similarity to use, choose from" +
                 "(classic | boolean | bm25)");
         return options;
     }

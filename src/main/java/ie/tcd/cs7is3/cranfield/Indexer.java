@@ -81,7 +81,7 @@ public class Indexer {
             case STANDRD: return new StandardAnalyzer();
             case WHITESPACE: return new WhitespaceAnalyzer();
             case ENGLISH: return new EnglishAnalyzer(getStopWprds());
-            case CUSTOM: return null;
+            case CUSTOM: return null; // to be implemented
         }
         return new EnglishAnalyzer();
     }
@@ -102,9 +102,9 @@ public class Indexer {
 
     public static Similarity getSimilarity(Similarities choice) {
         switch (choice) {
-            case CLASSIC: new ClassicSimilarity();
-            case BOOLEAN: new BooleanSimilarity();
-            case BM25: new BM25Similarity();
+            case CLASSIC: return new ClassicSimilarity();
+            case BOOLEAN: return new BooleanSimilarity();
+            case BM25: return new BM25Similarity();
         }
         return new BM25Similarity();
     }

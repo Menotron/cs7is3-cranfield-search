@@ -47,12 +47,13 @@ public class Searcher {
 
             ArrayList<QueryModel> queries = Parser.parseQuery(queryPath);
 
-            HashMap<String, Float> boostsMap = new HashMap<>();
-            boostsMap.put("title", 4f); // test
-            boostsMap.put("words", 6f);
+            HashMap<String, Float> boostMap = new HashMap<>();
+            boostMap.put("title", 4f); // test
+            boostMap.put("author", 2f);
+            boostMap.put("words", 6f);
 
             MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
-                    new String[]{"title", "author", "biblio", "words"}, analyzer, boostsMap);
+                    new String[]{"title", "author", "biblio", "words"}, analyzer, boostMap);
 
             NUM_RESULTS = numResults;
             logger.debug("Running search engine, max_hits set to: " + NUM_RESULTS);
