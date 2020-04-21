@@ -1,5 +1,6 @@
 package ie.tcd.cs7is3.cranfield;
 
+import ie.tcd.cs7is3.cranfield.analyzer.CustomAnalyzer;
 import ie.tcd.cs7is3.cranfield.parser.Parser;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
@@ -79,7 +80,7 @@ public class Indexer {
             case STANDRD: return new StandardAnalyzer();
             case WHITESPACE: return new WhitespaceAnalyzer();
             case ENGLISH: return new EnglishAnalyzer(getStopWprds());
-            case CUSTOM: return null; // to be implemented
+            case CUSTOM: return new CustomAnalyzer(); // to be implemented
         }
         return new EnglishAnalyzer();
     }
