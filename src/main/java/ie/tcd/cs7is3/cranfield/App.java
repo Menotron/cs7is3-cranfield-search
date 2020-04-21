@@ -84,7 +84,7 @@ public class App {
         options.addOption(ANALYZER_OPTION, ANALYZER_OPTION_LONG, true, "Analyzer to use, choose from " +
                 "(whitespace | simple | stop | standard | english | custom)");
         options.addOption(SIMILARITY_OPTION, SIMILARITY_OPTION_LONG, true, "Similarity to use, choose from" +
-                "(classic | boolean | bm25)");
+                "(classic | boolean | bm25 | lmds)");
         return options;
     }
 

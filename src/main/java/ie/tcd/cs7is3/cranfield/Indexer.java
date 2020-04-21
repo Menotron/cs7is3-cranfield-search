@@ -10,10 +10,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.search.similarities.BM25Similarity;
-import org.apache.lucene.search.similarities.BooleanSimilarity;
-import org.apache.lucene.search.similarities.ClassicSimilarity;
-import org.apache.lucene.search.similarities.Similarity;
+import org.apache.lucene.search.similarities.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger;
@@ -76,6 +73,7 @@ public class Indexer {
     }
 
     public static Analyzer getAnalyzer(Analyzers choice) {
+        logger.debug("return instance of " + choice);
         switch (choice) {
             case SIMPLE: return new SimpleAnalyzer();
             case STANDRD: return new StandardAnalyzer();
@@ -87,7 +85,7 @@ public class Indexer {
     }
 
     public enum Similarities {
-        CLASSIC("classic"), BOOLEAN("boolean"), BM25("bm25");
+        CLASSIC("classic"), BOOLEAN("boolean"), BM25("bm25"), LMDS("lmds");
         public String type;
         private Similarities(String type){this.type = type;}
         public String getType() {return type;}
@@ -101,10 +99,12 @@ public class Indexer {
     }
 
     public static Similarity getSimilarity(Similarities choice) {
+        logger.debug("return instance of " + choice);
         switch (choice) {
             case CLASSIC: return new ClassicSimilarity();
             case BOOLEAN: return new BooleanSimilarity();
             case BM25: return new BM25Similarity();
+            case LMDS: return new LMDirichletSimilarity();
         }
         return new BM25Similarity();
     }
