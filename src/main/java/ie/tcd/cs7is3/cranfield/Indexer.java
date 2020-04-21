@@ -30,6 +30,7 @@ public class Indexer {
 
     private static Logger logger = LoggerFactory.getLogger(Indexer.class);
     private static String INDEX_PATH = "index/";
+    private static String STOPWORD_FILE = "data/stopwords.txt";
 
 
     public static boolean createIndex(String docPath, Analyzers analyserChoice, Similarities similarityChoice) {
@@ -38,6 +39,8 @@ public class Indexer {
         Similarity similarity = getSimilarity(similarityChoice);
 
         try{
+            assert analyzer != null;
+            logger.debug("Analyzer: " + analyzer.toString() + " Similarity: " + similarity.toString());
             Directory directory = FSDirectory.open(Paths.get(INDEX_PATH));
             IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
@@ -47,6 +50,8 @@ public class Indexer {
             ArrayList<Document> documents = Parser.parse(docPath);
             indexWriter.addDocuments(documents);
             indexWriter.close();
+            logger.info("Finished indexing " + documents.size() + " documents");
+            logger.info("Index created at " + INDEX_PATH);
 
         }catch (IOException ioe){
             logger.error("Error while indexing", ioe);
@@ -107,11 +112,11 @@ public class Indexer {
     public static CharArraySet getStopWprds(){
         CharArraySet stopwords = null;
         try {
-            byte[] encoded = Files.readAllBytes(Paths.get("data/stopwords.txt"));
+            byte[] encoded = Files.readAllBytes(Paths.get(STOPWORD_FILE));
             String[] words = new String(encoded, StandardCharsets.UTF_8).split("\n");
             stopwords =  new CharArraySet(Arrays.asList(words), true);
         } catch (IOException ioe) {
-            logger.error("Error Reading stopwords file", ioe);
+            logger.error("Error Reading stopwords file" + STOPWORD_FILE, ioe);
         }
         return stopwords;
     }

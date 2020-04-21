@@ -1,8 +1,12 @@
 package ie.tcd.cs7is3.cranfield;
 
 import org.apache.commons.cli.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class App {
 
@@ -20,11 +24,19 @@ public class App {
     private static String docPath = "data/cran.all.1400";
     private static String queryPath = "data/cran.qry";
 
+    private static String ANALYZER_OPTION = "data/cran.all.1400";
+    private static String ANALYZER_OPTION_LONG = "data/cran.qry";
+
+    private static String SIMILARITY_OPTION = "data/cran.all.1400";
+    private static String SIMILARITY_OPTION_LONG = "data/cran.qry";
+
     public static void main(String[] args) throws Exception {
         // parse the args
         Options options = getOption();
         CommandLineParser parser = new DefaultParser();
-
+        ArrayList<HashMap<String,Integer>> a = new ArrayList<>();
+        Indexer.Analyzers analyzer = Indexer.Analyzers.ENGLISH;
+        Indexer.Similarities similarity = Indexer.Similarities.BM25;
 
         try {
             CommandLine commandLine = parser.parse(options, args);
@@ -42,14 +54,22 @@ public class App {
                 if (commandLine.hasOption(QUERY_OPTION) || commandLine.hasOption(QUERY_OPTION_LONG)) {
                     queryPath = commandLine.getOptionValue(QUERY_OPTION, queryPath);
                 }
+                if (commandLine.hasOption(ANALYZER_OPTION) || commandLine.hasOption(ANALYZER_OPTION_LONG)) {
+                    analyzer = Indexer.Analyzers.fromName(commandLine.getOptionValue(ANALYZER_OPTION, analyzer.getType()));
+                }
+                if (commandLine.hasOption(SIMILARITY_OPTION) || commandLine.hasOption(SIMILARITY_OPTION_LONG)) {
+                    similarity = Indexer.Similarities.fromName(commandLine.getOptionValue(SIMILARITY_OPTION, similarity.getType()));
+                }
             }
         } catch (Exception e) {
             logger.error("Exception while parsing arguments...");
             gethelp(options);
         }
-        Indexer.createIndex(docPath, Indexer.Analyzers.ENGLISH, Indexer.Similarities.BM25);
-        Searcher.runQueries(queryPath, 1000, Indexer.Analyzers.ENGLISH, Indexer.Similarities.BM25);
-        logger.info("Done...");
+        logger.info("Indexing started ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        Indexer.createIndex(docPath, analyzer, similarity);
+        logger.info("Running queries  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        Searcher.runQueries(queryPath, 1000, analyzer, similarity);
+        logger.info("Done ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
     /**
@@ -61,6 +81,10 @@ public class App {
         options.addOption(HELP_OPTION, HELP_OPTION_LONG, false, "Help");
         options.addOption(DOC_OPTION, DOC_OPTION_LONG, false, "Document path");
         options.addOption(QUERY_OPTION, QUERY_OPTION_LONG, false, "Query File path");
+        options.addOption(ANALYZER_OPTION, ANALYZER_OPTION_LONG, false, "Analyzer to use, choose from " +
+                "(whitespace | simple | stop | standard | english | custom)");
+        options.addOption(SIMILARITY_OPTION, SIMILARITY_OPTION_LONG, false, "Similarity to use, choose from" +
+                "(classic | boolean | bm25)");
         return options;
     }
 

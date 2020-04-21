@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Searcher {
 
@@ -45,10 +46,17 @@ public class Searcher {
             PrintWriter writer = new PrintWriter(resultFile, StandardCharsets.UTF_8.name());
 
             ArrayList<QueryModel> queries = Parser.parseQuery(queryPath);
+
+            HashMap<String, Float> boostsMap = new HashMap<>();
+            boostsMap.put("title", 4f); // test
+            boostsMap.put("words", 6f);
+            
             MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
-                    new String[]{"title", "author", "biblio", "words"}, analyzer);
+                    new String[]{"title", "author", "biblio", "words"}, analyzer, boostsMap);
 
             NUM_RESULTS = numResults;
+            logger.debug("Running search engine, max_hits set to: " + NUM_RESULTS);
+
             for (QueryModel element : queries) {
                 String queryString = QueryParser.escape(element.getQuery().trim());
                 Query query = queryParser.parse(queryString);
@@ -58,6 +66,7 @@ public class Searcher {
             indexReader.close();
             writer.close();
             directory.close();
+            logger.info("Searching complete output written to " + OUTPUT_FILE);
 
         } catch (IOException ioe) {
             logger.error("Error while running queries", ioe);
