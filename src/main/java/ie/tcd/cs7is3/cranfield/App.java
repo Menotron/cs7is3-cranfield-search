@@ -24,11 +24,11 @@ public class App {
     private static String docPath = "data/cran.all.1400";
     private static String queryPath = "data/cran.qry";
 
-    private static String ANALYZER_OPTION = "data/cran.all.1400";
-    private static String ANALYZER_OPTION_LONG = "data/cran.qry";
+    private static String ANALYZER_OPTION = "a";
+    private static String ANALYZER_OPTION_LONG = "analyzer";
 
-    private static String SIMILARITY_OPTION = "data/cran.all.1400";
-    private static String SIMILARITY_OPTION_LONG = "data/cran.qry";
+    private static String SIMILARITY_OPTION = "s";
+    private static String SIMILARITY_OPTION_LONG = "similarity";
 
     public static void main(String[] args) throws Exception {
         // parse the args

@@ -50,7 +50,7 @@ public class Searcher {
             HashMap<String, Float> boostsMap = new HashMap<>();
             boostsMap.put("title", 4f); // test
             boostsMap.put("words", 6f);
-            
+
             MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
                     new String[]{"title", "author", "biblio", "words"}, analyzer, boostsMap);
 
