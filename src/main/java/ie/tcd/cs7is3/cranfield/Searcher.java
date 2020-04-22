@@ -48,9 +48,9 @@ public class Searcher {
             ArrayList<QueryModel> queries = Parser.parseQuery(queryPath);
 
             HashMap<String, Float> boostMap = new HashMap<>();
-            boostMap.put("title", 4f); // test
+            boostMap.put("title", 6f); // test
             boostMap.put("author", 2f);
-            boostMap.put("words", 6f);
+            boostMap.put("words", 10f);
 
             MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
                     new String[]{"title", "author", "biblio", "words"}, analyzer, boostMap);
