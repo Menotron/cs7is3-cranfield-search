@@ -74,7 +74,6 @@ public class Indexer {
     }
 
     public static Analyzer getAnalyzer(Analyzers choice) {
-        logger.debug("return instance of " + choice);
         switch (choice) {
             case SIMPLE: return new SimpleAnalyzer();
             case STANDRD: return new StandardAnalyzer();
@@ -100,7 +99,6 @@ public class Indexer {
     }
 
     public static Similarity getSimilarity(Similarities choice) {
-        logger.debug("return instance of " + choice);
         switch (choice) {
             case CLASSIC: return new ClassicSimilarity();
             case BOOLEAN: return new BooleanSimilarity();
